@@ -8,7 +8,7 @@ const app = express();
 app.use(cors())
 
 app.get('/repos', (request, response) => {
-    const url = `https://github.com/trending/${request.query.language}?since=${request.query.interval}`
+    const url = `https://github.com/trending/${encodeURIComponent(request.query.language)}?since=${request.query.interval}`
 
     got(url).then(html => {
         const $ = cheerio.load(html.body);
