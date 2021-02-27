@@ -1,22 +1,32 @@
 {
-  "name": "gitpeek_api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "https://github.com/MuriloCampos/gitpeek_api.git",
-  "author": "Murilo Campos <murilo13campos@gmail.com>",
-  "license": "MIT",
-  "scripts": {
-    "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts"
-  },
-  "dependencies": {
-    "cheerio": "1.0.0-rc.3",
-    "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "got": "10.4.0"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.11",
-    "ts-node-dev": "^1.1.6",
-    "typescript": "^4.2.2"
-  }
+   "name": "gitpeek_api",
+   "version": "1.0.0",
+   "main": "./src/server.ts",
+   "repository": "https://github.com/MuriloCampos/gitpeek_api.git",
+   "author": "Murilo Campos <murilo13campos@gmail.com>",
+   "license": "MIT",
+   "scripts": {
+      "dev": "ts-node-dev --transpile-only --ignore-watch node_modules src/server.ts",
+      "start": "ts-node src/index.ts",
+      "typeorm": "ts-node-dev node_modules/typeorm/cli.js"
+   },
+   "dependencies": {
+      "cheerio": "1.0.0-rc.3",
+      "cors": "^2.8.5",
+      "express": "^4.17.1",
+      "got": "10.4.0",
+      "mysql": "^2.14.1",
+      "pg": "^8.5.1",
+      "reflect-metadata": "^0.1.10",
+      "typeorm": "0.2.31",
+      "uuid": "^8.3.2"
+   },
+   "devDependencies": {
+      "@types/express": "^4.17.11",
+      "@types/node": "^8.0.29",
+      "@types/uuid": "^8.3.0",
+      "ts-node": "3.3.0",
+      "ts-node-dev": "^1.1.6",
+      "typescript": "3.3.3333"
+   }
 }

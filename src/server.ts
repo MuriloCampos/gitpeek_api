@@ -1,56 +1,15 @@
+import "reflect-metadata";
 import express from 'express';
-import cheerio from 'cheerio';
-import got from 'got';
 import cors from 'cors';
+
+import { router } from "./routes";
 
 const app = express();
 
-app.use(cors())
+app.use(cors());
 
-app.get('/repos', (request, response) => {
-    const url = `https://github.com/trending/${encodeURIComponent(request.query.language)}?since=${request.query.interval}`
+app.use(router);
 
-    got(url).then(html => {
-        const $ = cheerio.load(html.body);
+const port = process.env.PORT || 3333
 
-        let paths = []
-        let stars = []
-
-        $('.muted-link').each((i, link) => {
-            const href = link.attribs.href;
-            const stargazers = link.children[link.children.length - 1].data.split('\n')[1].trim()
-
-            stars.push(stargazers)
-            paths.push(href)
-        });
-
-        const uniquePaths = []
-
-        paths.forEach((path, index) => {
-            if (index % 2 === 0) {
-                const splitted = path.split('/')
-
-                uniquePaths.push(splitted[1] + '/' + splitted[2])
-
-            }
-
-        })
-
-        stars = stars.filter((item, index) => index % 2 === 0)
-
-        const res = uniquePaths.map((item, index) => {
-            return {
-                repo: item,
-                stargazers: stars[index]
-            }
-        })
-        response.send({data: res})
-
-
-    }).catch(err => {
-        console.log(err);
-    });
-
-})
-
-app.listen(3333, () => console.log('Server is running!'))
+app.listen(port, () => console.log(`Server is running on port ${port}!`))

@@ -1,0 +1,33 @@
+version: "3"
+services:
+  server:
+    container_name: server
+    build: .
+    ports:
+      - "3333:3333"
+    depends_on: 
+      - database
+    links:
+      - database
+    networks:
+      - default
+  database:
+    container_name: database
+    image: postgres
+    environment:
+      - POSTGRES_DB=gitpeek_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - database-data:/var/lib/postgresql/data
+    networks:
+      - default
+
+volumes:
+  database-data: {}
+
+networks:
+  default:
+    driver: bridge
