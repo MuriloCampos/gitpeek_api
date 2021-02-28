@@ -19,7 +19,6 @@ let connectionOptions: ConnectionOptions = {
 let finalConnOptions = {...connectionOptions}
 
 if (process.env.DATABASE_URL) {
-    console.log('entrou na env')
     const databaseUrl: string = process.env.DATABASE_URL;
     const parsedConnOptions = PostgressConnectionStringParser.parse(databaseUrl);
     finalConnOptions.host = parsedConnOptions.host;
@@ -30,4 +29,9 @@ if (process.env.DATABASE_URL) {
     finalConnOptions.extra = { ssl: { rejectUnauthorized: false } };
 }
 
-createConnection(finalConnOptions).then(() => console.log('database connected'));
+createConnection(finalConnOptions).then(async (conn) => {
+    console.log('Running migrations...')
+    await conn.runMigrations();
+    console.log('Migrations done.')
+    console.log('Database connected.')
+});
