@@ -69,7 +69,7 @@ class RepositoryController {
     async starredRepos(request: Request, response: Response) {
         const ormRepository = getRepository(Repo);
         const language = typeof request.query.language === 'string' ? request.query.language : ''
-        const url = `https://api.github.com/search/repositories?q=language:${encodeURIComponent(language)}&sort=stars&order=desc`
+        const url = `https://api.github.com/search/repositories?q=language:${encodeURIComponent(language)}&sort=stars&order=desc&page=1&per_page=50`
         const api = axios.create()
 
         if (process.env.GITHUB_TOKEN) {
