@@ -1,7 +1,7 @@
 import {Entity, PrimaryColumn, Column, CreateDateColumn} from "typeorm";
 import { v4 as uuid } from 'uuid';
 
-@Entity()
+@Entity("repositories")
 export class Repo {
     @PrimaryColumn()
     readonly id: string;

@@ -1,9 +1,14 @@
 import { Request, Response } from 'express';
 import cheerio from 'cheerio';
 import got from 'got';
+import axios from 'axios';
+import { getRepository } from 'typeorm';
+
+import { Repo } from '../models/Repo';
 
 class RepositoryController {
-    async index(request: Request, response: Response) {
+    async featuredRepos(request: Request, response: Response) {
+        const ormRepository = getRepository(Repo);
         const url = `https://github.com/trending/${encodeURIComponent(request.query.language)}?since=${request.query.interval}`
 
         got(url).then(async html => {
@@ -34,17 +39,57 @@ class RepositoryController {
 
             stars = stars.filter((item, index) => index % 2 === 0)
 
-            const res = uniquePaths.map((item, index) => {
-                return {
-                    repo: item,
-                    stargazers: stars[index]
-                }
-            })
+            let reposToReturn = []
 
-            response.send({ data: res })
+            for(let i = 0; i < uniquePaths.length; i++) {
+                const [owner, name] = uniquePaths[i].split('/');
+
+                const newRepo = ormRepository.create({
+                    name,
+                    owner,
+                    stars: stars[i],
+                    html_url: `https://github.com/${uniquePaths[i]}`
+                })
+
+                await ormRepository.save(newRepo);
+
+                reposToReturn.push({
+                    repo: uniquePaths[i],
+                    stargazers: stars[i]
+                }) 
+            }
+
+            response.send({ data: reposToReturn })
         }).catch(err => {
             console.log(err);
         });
+    }
+
+    async starredRepos(request: Request, response: Response) {
+        const ormRepository = getRepository(Repo);
+        const url = `https://api.github.com/search/repositories?q=language:${encodeURIComponent(request.query.language)}&sort=stars&order=desc`
+        const api = axios.create()
+
+        if (process.env.GITHUB_TOKEN) {
+            api.defaults.headers.Authorization = process.env.GITHUB_TOKEN;
+        }
+
+        const res = await api.get(url)
+
+        if (res && res.data && res.data.items.length > 0) {
+            for(let i = 0; i < res.data.items.length; i++) {
+                const newRepo = ormRepository.create({
+                    name: res.data.items[i].name,
+                    owner: res.data.items[i].owner.login,
+                    stars: res.data.items[i].stargazers_count,
+                    html_url: res.data.items[i].html_url
+                })
+
+                await ormRepository.save(newRepo);
+            }
+        }
+
+        response.send({ data: res.data })
     }
 }
 

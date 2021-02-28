@@ -7,6 +7,8 @@ services:
       - "3333:3333"
     depends_on: 
       - database
+    env_file: 
+      - .env
     links:
       - database
     networks:
