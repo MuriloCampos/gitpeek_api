@@ -16,7 +16,7 @@ let connectionOptions: ConnectionOptions = {
     }
 };
 
-let finalConnOptions = {...connectionOptions}
+let finalConnOptions = { ...connectionOptions }
 
 if (process.env.DATABASE_URL) {
     const databaseUrl: string = process.env.DATABASE_URL;
@@ -30,8 +30,10 @@ if (process.env.DATABASE_URL) {
 }
 
 createConnection(finalConnOptions).then(async (conn) => {
-    console.log('Running migrations...')
-    await conn.runMigrations();
-    console.log('Migrations done.')
-    console.log('Database connected.')
+    if (process.env.NODE_ENV !== 'test') {
+        console.log('Running migrations...')
+        await conn.runMigrations();
+        console.log('Migrations done.')
+        console.log('Database connected.')
+    }
 });

@@ -9,7 +9,8 @@ import { Repo } from '../models/Repo';
 class RepositoryController {
     async featuredRepos(request: Request, response: Response) {
         const ormRepository = getRepository(Repo);
-        const url = `https://github.com/trending/${encodeURIComponent(request.query.language)}?since=${request.query.interval}`
+        const language = typeof request.query.language === 'string' ? request.query.language : ''
+        const url = `https://github.com/trending/${encodeURIComponent(language)}?since=${request.query.interval}`
 
         got(url).then(async html => {
             const $ = cheerio.load(html.body);
@@ -67,7 +68,8 @@ class RepositoryController {
 
     async starredRepos(request: Request, response: Response) {
         const ormRepository = getRepository(Repo);
-        const url = `https://api.github.com/search/repositories?q=language:${encodeURIComponent(request.query.language)}&sort=stars&order=desc`
+        const language = typeof request.query.language === 'string' ? request.query.language : ''
+        const url = `https://api.github.com/search/repositories?q=language:${encodeURIComponent(language)}&sort=stars&order=desc`
         const api = axios.create()
 
         if (process.env.GITHUB_TOKEN) {
