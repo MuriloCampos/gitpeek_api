@@ -29,11 +29,11 @@ if (process.env.DATABASE_URL) {
     finalConnOptions.extra = { ssl: { rejectUnauthorized: false } };
 }
 
-createConnection(finalConnOptions).then(async (conn) => {
-    if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== 'test') {
+    createConnection(finalConnOptions).then(async (conn) => {
         console.log('Running migrations...')
         await conn.runMigrations();
         console.log('Migrations done.')
         console.log('Database connected.')
-    }
-});
+    });
+}

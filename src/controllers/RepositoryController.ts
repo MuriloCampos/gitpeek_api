@@ -9,8 +9,8 @@ import { Repo } from '../models/Repo';
 class RepositoryController {
     async featuredRepos(request: Request, response: Response) {
         const ormRepository = getRepository(Repo);
-        const language = typeof request.query.language === 'string' ? request.query.language : ''
-        const url = `https://github.com/trending/${encodeURIComponent(language)}?since=${request.query.interval}`
+        const language = typeof request.query.language === 'string' ? request.query.language : '';
+        const url = `https://github.com/trending/${encodeURIComponent(language)}?since=${request.query.interval}`;
 
         got(url).then(async html => {
             const $ = cheerio.load(html.body);
