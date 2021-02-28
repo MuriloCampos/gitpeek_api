@@ -89,7 +89,7 @@ class RepositoryController {
             }
         }
 
-        response.send({ data: res.data })
+        response.send(res.data.items)
     }
 }
 

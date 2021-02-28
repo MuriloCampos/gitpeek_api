@@ -8,6 +8,8 @@ RUN yarn install
 
 COPY . .
 
-ENV PORT=3333
+ENV PORT=8080
 
-CMD [ "yarn", "dev" ]
+EXPOSE 8080
+
+CMD [ "yarn", "start" ]
