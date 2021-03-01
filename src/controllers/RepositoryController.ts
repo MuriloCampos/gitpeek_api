@@ -4,6 +4,7 @@ import got from 'got';
 import axios from 'axios';
 import { getRepository } from 'typeorm';
 
+import getParsedInfos from '../utils/getParsedInfos';
 import { Repo } from '../models/Repo';
 
 class RepositoryController {
@@ -26,19 +27,7 @@ class RepositoryController {
                 paths.push(href)
             });
 
-            const uniquePaths = []
-
-            paths.forEach((path, index) => {
-                if (index % 2 === 0) {
-                    const splitted = path.split('/')
-
-                    uniquePaths.push(splitted[1] + '/' + splitted[2])
-
-                }
-
-            })
-
-            stars = stars.filter((item, index) => index % 2 === 0)
+            const { stars: parsedStars, uniquePaths } = getParsedInfos(paths, stars)
 
             let reposToReturn = []
 
@@ -48,7 +37,7 @@ class RepositoryController {
                 const newRepo = ormRepository.create({
                     name,
                     owner,
-                    stars: stars[i],
+                    stars: parsedStars[i],
                     html_url: `https://github.com/${uniquePaths[i]}`
                 })
 
@@ -56,7 +45,7 @@ class RepositoryController {
 
                 reposToReturn.push({
                     repo: uniquePaths[i],
-                    stargazers: stars[i]
+                    stargazers: parsedStars[i]
                 }) 
             }
 
